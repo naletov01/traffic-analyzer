@@ -37,7 +37,7 @@ All ONNX models are bundled in `weights/`, so nothing else is downloaded.
 
 ```bash
 python main.py rtsp://user:pass@host:554/stream   # camera
-python main.py path/to/video.mp4                  # video file
+python main.py weights\test_plates.mp4            # test video file
 python main.py 0                                  # webcam
 ```
 
@@ -137,7 +137,7 @@ pip install -r requirements.txt
 
 ```bash
 python main.py rtsp://user:pass@host:554/stream   # камера
-python main.py path/to/video.mp4                  # відеофайл
+python main.py weights\test_plates.mp4            # тестовий відеофайл
 python main.py 0                                  # вебкамера
 ```
 
