@@ -9,15 +9,15 @@ with an `id | colour | plate` label.
 
 ## Features
 
-- **Detection + tracking** — YOLO11n with ByteTrack gives each vehicle a stable
+- **Detection + tracking** - YOLO11n with ByteTrack gives each vehicle a stable
   unique id as it enters and moves through the scene.
-- **Colour estimation** — a small MobileNet classifier (`config.color.backend`),
+- **Colour estimation** - a small MobileNet classifier (`config.color.backend`),
   distilled from a CLIP teacher so it runs at edge speed; an HSV heuristic is
   kept as a fallback backend.
-- **Licence plate reading** — a two-stage ONNX pipeline (plate localization +
+- **Licence plate reading** - a two-stage ONNX pipeline (plate localization +
   OCR) with per-track voting across frames for a stable result. Ukrainian-format
   normalization is available via `config.plate.format_mode`.
-- **Built for realtime / edge** — threaded capture, work done on vehicle crops,
+- **Built for realtime / edge** - threaded capture, work done on vehicle crops,
   OCR throttled per track, a motion gate that skips static frames, and every
   model running through ONNX Runtime. No torch / ultralytics at runtime, so the
   install is ~250 MB instead of ~2 GB.
@@ -73,14 +73,14 @@ tools/                   colour dataset generation + model training (dev only)
 
 What was done, and why each approach was chosen:
 
-- **Detection + tracking in one step** — `YOLO.track()` (YOLO11n + ByteTrack)
+- **Detection + tracking in one step** - `YOLO.track()` (YOLO11n + ByteTrack)
   detects vehicles and assigns stable ids in a single call, so "spot new cars"
   and "unique id" are handled together. The nano model was picked for realtime.
-- **Two-stage plate reading** — a plate is small, so OCR over the whole car is
+- **Two-stage plate reading** - a plate is small, so OCR over the whole car is
   unreliable; we localize the plate inside the vehicle crop first, then OCR only
   that. A single frame often misreads, so readings are voted across frames per
   track and the result stays stable.
-- **Colour by a distilled CNN** — an HSV heuristic was tried first but kept
+- **Colour by a distilled CNN** - an HSV heuristic was tried first but kept
   failing on glare and lighting cast (silver cars reading as blue at dusk), since
   a fixed rule can't adapt. A CLIP model classified colour well but is too heavy
   for edge (~1.7 GB), so it was *distilled*: CLIP auto-labelled crops from the
@@ -88,12 +88,12 @@ What was done, and why each approach was chosen:
   on them (`tools/`, `requirements-dev.txt` to retrain). Colour is voted across
   frames weighted by crop size, so the answer comes from the closest, clearest
   view. White/silver/gray stays the hardest distinction.
-- **Edge / realtime** — every model runs as ONNX through onnxruntime; heavy work
+- **Edge / realtime** - every model runs as ONNX through onnxruntime; heavy work
   runs on small vehicle crops, throttled and cached per track; a cheap motion
   gate skips the detector on static frames; and capture runs on a background
   thread that always serves the freshest frame so latency stays low. The vehicle
   detector (`yolo_onnx.py`) and a small numpy ByteTrack (`byte_track.py`) replace
-  ultralytics, so **torch is not needed at runtime** — the install drops from
+  ultralytics, so **torch is not needed at runtime** - the install drops from
   ~2 GB to ~250 MB. The backend is a one-line swap (ONNX → TensorRT/OpenVINO).
 
 ---
@@ -109,15 +109,15 @@ ID, визначає колір кузова та зчитує номерний 
 
 ## Можливості
 
-- **Детекція + трекінг** — YOLO11n з ByteTrack дає кожному авто стабільний
+- **Детекція + трекінг** - YOLO11n з ByteTrack дає кожному авто стабільний
   унікальний ID від моменту появи в кадрі.
-- **Визначення кольору** — невелика модель MobileNet (`config.color.backend`),
+- **Визначення кольору** - невелика модель MobileNet (`config.color.backend`),
   дистильована з «вчителя» CLIP, тому працює на edge-швидкості; HSV-евристика
   лишається запасним backend-ом.
-- **Зчитування номерів** — двоступеневий ONNX-конвеєр (локалізація номера + OCR)
+- **Зчитування номерів** - двоступеневий ONNX-конвеєр (локалізація номера + OCR)
   з голосуванням по кадрах для стабільного результату. Нормалізація під
-  український формат — через `config.plate.format_mode`.
-- **Розраховано на realtime / edge** — захоплення в окремому потоці, обробка по
+  український формат - через `config.plate.format_mode`.
+- **Розраховано на realtime / edge** - захоплення в окремому потоці, обробка по
   кропах авто, OCR з обмеженою частотою, motion-фільтр пропускає статичні кадри,
   усі моделі працюють через ONNX Runtime. У рантаймі немає torch / ultralytics,
   тож встановлення важить ~250 МБ замість ~2 ГБ.
@@ -142,7 +142,7 @@ python main.py 0                                  # вебкамера
 ```
 
 Прапорці: `--skip-empty` (пропускати кадри без авто), `--no-display` (без вікна),
-`--no-motion-filter` (обробляти кожен кадр). Вихід — `q` або `Esc`.
+`--no-motion-filter` (обробляти кожен кадр). Вихід - `q` або `Esc`.
 
 ## Структура
 
@@ -173,26 +173,26 @@ tools/                   генерація датасету кольору + н
 
 Які кроки виконано і чому обрано саме такі підходи:
 
-- **Детекція і трекінг одним кроком** — `YOLO.track()` (YOLO11n + ByteTrack)
+- **Детекція і трекінг одним кроком** - `YOLO.track()` (YOLO11n + ByteTrack)
   детектує авто та присвоює стабільні ID за один виклик, тож «виявлення нових
   авто» і «унікальний ID» вирішуються разом. Модель nano обрано заради realtime.
-- **Двоступеневе зчитування номера** — номер малий, тому OCR по всій машині
+- **Двоступеневе зчитування номера** - номер малий, тому OCR по всій машині
   ненадійний; спершу локалізуємо номер у кропі авто, потім розпізнаємо лише його.
   Один кадр часто читається з помилкою, тому результати голосуються по кадрах у
-  межах треку — підсумковий номер стабільний.
-- **Колір через дистильований CNN** — спершу пробували HSV-евристику, але вона
+  межах треку - підсумковий номер стабільний.
+- **Колір через дистильований CNN** - спершу пробував HSV-евристику, але вона
   ламалася на бліках і кольоровому відтінку освітлення (срібляста машина ввечері
   читалась як синя), бо фіксоване правило не адаптується. Модель CLIP визначала
-  колір добре, але занадто важка для edge (~1.7 ГБ), тож її *дистилювали*: CLIP
-  авто-розмітив кропи з вхідних відео, мітки виправили вручну, і на них навчили
-  MobileNet (~6 МБ) (`tools/`, для перенавчання — `requirements-dev.txt`). Колір
+  колір краще але не на багато, та занадто важка для edge (~1.7 ГБ), тож її *дистилював*: CLIP
+  авто-розмітив кропи з вхідних відео, мітки виправив вручну, і на них навчив
+  MobileNet (~6 МБ) (`tools/`, для перенавчання - `requirements-dev.txt`). Колір
   голосується по кадрах із вагою за розміром кропа, тому відповідь береться з
   найближчого, найчіткішого вигляду. Білий/срібний/сірий лишається найскладнішим
   розрізненням.
-- **Edge / realtime** — усі моделі працюють як ONNX через onnxruntime; важка
+- **Edge / realtime** - усі моделі працюють як ONNX через onnxruntime; важка
   робота виконується по малих кропах авто, з обмеженою частотою та кешуванням по
   треках; дешевий motion-фільтр пропускає детектор на статичних кадрах; захоплення
   йде в окремому потоці, що завжди віддає найсвіжіший кадр. Детектор авто
   (`yolo_onnx.py`) і невеликий ByteTrack на numpy (`byte_track.py`) замінюють
-  ultralytics, тож **torch у рантаймі не потрібен** — встановлення зменшується з
+  ultralytics, тож **torch у рантаймі не потрібен** - встановлення зменшується з
   ~2 ГБ до ~250 МБ. Backend змінюється одним рядком (ONNX → TensorRT/OpenVINO).
