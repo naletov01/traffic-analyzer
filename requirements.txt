@@ -1,0 +1,7 @@
+opencv-python==4.13.0.92      # video capture and rendering
+numpy==2.5.0
+onnxruntime==1.27.0           # runs all models (vehicle, plate, colour)
+
+# license plate reading
+open-image-models[onnx]==0.5.1   # plate localization
+fast-plate-ocr==1.1.0            # plate OCR

@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Models (downloaded / exported, not source)
+*.pt
+*.onnx
+*.engine
+
+# Test media
+weights/*.mp4
+weights/*.avi
+weights/*.mov
+
+# OS / tooling
+.DS_Store
+.claude/
+
+# ship the models the app needs at runtime (no torch to regenerate them)
+!weights/yolo11n.onnx
+!weights/color_mobilenet.onnx
+!weights/color_classes.txt
+!weights/test_plates.mp4

@@ -1,0 +1,6 @@
+# Extra dependencies for retraining the colour model (tools/). Not needed to run
+# the app — the trained color_mobilenet.onnx runs on onnxruntime alone.
+open-clip-torch==3.3.0      # CLIP teacher for auto-labelling
+torchvision==0.27.1         # MobileNetV3 student
+onnx==1.22.0
+onnxscript==0.7.0           # required by torch's ONNX exporter
